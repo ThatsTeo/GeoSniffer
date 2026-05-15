@@ -54,6 +54,7 @@ GeoSniff/                   # Root folder
 │   ├── ParseWifi.cpp           # Parse output & obtain MACs
 │   ├── PostGC.cpp              # Curl POST & geolocalization
 │   └── TGBot.cpp               # All Telegram Bot functions
+├── config.txt     <-----   # Where you will place your API 
 ├── CMakeLists.txt          # Build program
 ├── GeoSniffer.hpp          # Custom header
 ├── main.cpp                # Main code
@@ -65,6 +66,17 @@ GeoSniff/                   # Root folder
 ---
 
 ## How to compile and build 🏁
+
+**First** you will ***need*** your Telegram Bot token and Google Cloud Geolocation API, then create a file named `config.txt`
+in the root folder as showed in the structure above.
+
+Once you have the file, copy this **template**:
+
+```
+GOOGLE_API_KEY=abcd
+TELEGRAM_TOKEN=1234
+```
+then save the file and proced to the compile step.
 
 To **compile** the executable, open terminal and got in the **root folder** (`GeoSniff/`) and run: 
 - `mkdir build/` -> Used to create the build directory
