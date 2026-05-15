@@ -21,14 +21,14 @@ target_include_directories(geo_sniffer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Required libs to compile
 target_link_libraries(geo_sniffer
     PRIVATE
-    TgBot              # -lTgBot
-    boost_system       # -lboost_system
-    ssl                # -lssl
-    crypto             # -lcrypto
-    pthread            # -lpthread
-    curl               # Per le Google API
-    gpiodcxx           # Per il buzzer/bottone (libgpiod v2)
-    rt                 # Per le funzioni di tempo real-time (consigliato)
+    TgBot
+    boost_system
+    ssl
+    crypto
+    pthread
+    curl
+    gpiodcxx
+    rt
 )
 
 # Optional optimization for compiling
