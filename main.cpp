@@ -4,6 +4,9 @@ namespace GSL = GeoSnifferLib;
 
 
 int main(void) {
+	
+	std::cout << "[DEBUG] Starting test" << std::endl;
+	
 	// iwlist command to get MAC address
 	const char* command = "sudo iwlist wlan0 scanning";
 	std::string output = GSL::Wifi::exec(command);

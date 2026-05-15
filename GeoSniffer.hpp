@@ -22,6 +22,9 @@
 #include <stdio.h>
 #include <tgbot/tgbot.h>
 
+// Libs for GPIO PIN managment 
+#include <gpiod.hpp>
+#include <chrono>
 
 namespace GeoSnifferLib {
     
@@ -62,4 +65,8 @@ namespace GeoSnifferLib {
 		bool RunBot(void);
 	}
     
+    namespace Gpiod {
+		// Number of the GPIO PIN for the passive buzzer
+		extern int numPinBuzzer;
+	}
 }
