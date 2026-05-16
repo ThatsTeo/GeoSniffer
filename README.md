@@ -11,7 +11,7 @@
 **GeoSniffBot** was made as a school project, all developed by me in C++. The original idea was to "recreate" a sort of smart tracker with only DIY technology.
  
 - To start, the main code relies on the `sudo iwlist wlan0 scanning` Linux command, which is used to obtain the MAC Address (physical network card address) from all near Access Points (aka Routers).
-- After collecting the address, a function perform a curl POST using Google Cloud Geolocation API to triangulate the position of the Raspberry (works best with at least 2 nearby routers!).
+- After collecting the address, a function performs a curl POST using Google Cloud Geolocation API to triangulate the position of the Raspberry (works best with at least 2 nearby routers!).
 - The output is then displayed through a Telegram Bot created to send the location directly to the users phone, with also a manual request via a `/locate` command.
 
 ---
@@ -30,7 +30,7 @@
 └─────────────────┬───────────────────┘
                   │ 
 ┌─────────────────▼───────────────────┐
-│        Telegram BOT message         │  ← File sul server locale
+│        Telegram BOT message         │  ← Output
 └─────────────────────────────────────┘
 ```
 
@@ -82,6 +82,6 @@ To **compile** the executable, open terminal and got in the **root folder** (`Ge
 - `mkdir build/` -> Used to create the build directory
 - `cd build/` -> Enter the newly created folder
 - `cmake ..` -> Generates the build files from CMakeLists.txt
-- `make` -> use to compile all files
+- `make -j4` -> use to compile all files
 
 ### And you are done! Now to **execute** just run `./geo_sniff` and the program should start
