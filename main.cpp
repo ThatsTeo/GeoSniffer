@@ -3,8 +3,7 @@
 namespace GSL = GeoSnifferLib;
 
 
-int main(void) {
-	
+int main() {
 	std::cout << "[DEBUG] Starting test" << std::endl;
 	
 	// iwlist command to get MAC address
@@ -12,7 +11,7 @@ int main(void) {
 	std::string output = GSL::Wifi::exec(command);
     
     if (output.empty()) {
-        std::cout << "Nessun output" << std::endl;
+        std::cerr << "[DEBUG] iwlist command gave no output!" << std::endl;
     }
 	GSL::Wifi::parseWifi(output);
 	

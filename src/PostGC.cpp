@@ -4,7 +4,6 @@
 
 using json = nlohmann::json;
 
-
 namespace GeoSnifferLib::PostGC {
 	std::string getGoogleAPI() {
 		std::ifstream config("../config.txt");
@@ -12,10 +11,10 @@ namespace GeoSnifferLib::PostGC {
 	
 		while(std::getline(config, line)) {
 			if(line.find("GOOGLE_API_KEY=") != std::string::npos) {
-				return line.substr(line.find("=") + 1);
+				return line.substr(line.find('=') + 1);
 			}
 		}
-		std::cout << "[DEBUG] Google Cloud API not found.. Returning empty string" << std::endl;
+		std::cerr << "[DEBUG] Google Cloud API not found.. Returning empty string" << std::endl;
 		return "";
 	}
 	
@@ -63,7 +62,7 @@ namespace GeoSnifferLib::PostGC {
 		return response;
 	}
 
-	std::tuple<double, double, double> parseCoords(std::string StrJSON) {
+	std::tuple<double, double, double> parseCoords(const std::string& StrJSON) {
 		auto locationJson = json::parse(StrJSON);
     
 		double latitude = 0;

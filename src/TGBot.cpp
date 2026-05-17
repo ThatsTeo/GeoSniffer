@@ -11,36 +11,39 @@ namespace GeoSnifferLib::TGBot {
 	
 		while(std::getline(config, line)) {
 			if(line.find("TELEGRAM_TOKEN=") != std::string::npos) {
-				return line.substr(line.find("=") + 1);
+				return line.substr(line.find('=') + 1);
 			}
 		}
-		std::cout << "[DEBUG] Telegram Bot token not found.. Returning empty string" << std::endl;
+		std::cerr << "[DEBUG] Telegram Bot token not found.. Returning empty string" << std::endl;
 		return "";
 	}
-	
+
+	std::string locateMsg() {
+		const auto command = "sudo iwlist wlan0 scanning";
+		const std::string outputWifi = Wifi::exec(command);
+
+		if (outputWifi.empty()) {
+			std::cerr << "Nessun output" << std::endl;
+		}
+
+		Wifi::parseWifi(outputWifi);
+
+		const std::string positionStr = PostGC::postGCG(Wifi::networks);
+		// std::cout << "[DEBUG] Full JSON: " << positionStr << std::endl;
+
+		auto [lat, lng, accuracy] = GSL::PostGC::parseCoords(positionStr);
+
+		return "Posizione: " + std::to_string(lat) + ", " + std::to_string(lng)
+			 + "\nPrecisione: " + std::to_string(static_cast<int>(accuracy)) + " metri"
+			 + "\nhttps://www.google.com/maps/place/" + std::to_string(lat) + "," + std::to_string(lng);
+	}
+
 	bool RunBot() {
 		std::string botToken = getBotToken();
 		TgBot::Bot bot(botToken);
 
-		bot.getEvents().onCommand("locate", [&bot](TgBot::Message::Ptr message) {
-			const char* command = "sudo iwlist wlan0 scanning";
-			std::string output = GSL::Wifi::exec(command);
-    
-			if (output.empty()) {
-				std::cout << "Nessun output" << std::endl;
-			}
-			GSL::Wifi::parseWifi(output);
-	
-			// output callback api 
-			std::string positionStr = GSL::PostGC::postGCG(GSL::Wifi::networks);
-			//std::cout << "[DEBUG] Full JSON: " << positionStr << std::endl;
-
-			auto [lat, lng, accuracy] = GSL::PostGC::parseCoords(positionStr);
-			
-			std::string posMsg = "Posizione: " + std::to_string(lat) + ", " + std::to_string(lng)
-			 + "\nPrecisione: " + std::to_string((int) accuracy) + " metri"
-			 + "\nhttps://www.google.com/maps/place/" + std::to_string(lat) + "," + std::to_string(lng);
-			bot.getApi().sendMessage(message->chat->id, posMsg);
+		bot.getEvents().onCommand("locate", [&bot](const TgBot::Message::Ptr& message) {
+			bot.getApi().sendMessage(message->chat->id, locateMsg());
 		});
     
 		try {

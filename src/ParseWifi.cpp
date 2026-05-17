@@ -8,7 +8,7 @@ namespace GeoSnifferLib::Wifi {
     std::string currentMac;
         
 	std::string exec(const char* cmd) {
-		std::array<char, 256> buffer;
+		std::array<char, 256> buffer{};
 		std::string result;
     
 		std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
@@ -37,9 +37,9 @@ namespace GeoSnifferLib::Wifi {
 		while(std::getline(stream, line)) {
 			std::smatch match;
 
-			if (std::regex_search(line, match, essid_regex)) {
+			// if (std::regex_search(line, match, essid_regex)) {
 				//std::cout << "Networks name: " << match[1] << std::endl;
-			}
+			// }
 
 			if (std::regex_search(line, match, mac_regex)) {
 				//std::cout << "MAC Address: " << match[1] << " dBm" << std::endl;
@@ -54,7 +54,7 @@ namespace GeoSnifferLib::Wifi {
 		}
 	
 		for(const auto& [mac, rssi] : networks) {
-			std::cout <<"MAC Address: " << mac << " | RSSI: " << rssi << " dBm" << std::endl;
+			std::cout <<"[DEBUG] MAC Address: " << mac << " | RSSI: " << rssi << " dBm" << std::endl;
 		}
 	}
 	
