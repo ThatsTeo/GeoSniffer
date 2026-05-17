@@ -14,6 +14,7 @@ add_executable(geo_sniffer
     src/ParseWifi.cpp 
     src/PostGC.cpp
     src/TGBot.cpp
+        src/GPIOdBuzzer.cpp
 )
 
 target_include_directories(geo_sniffer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
