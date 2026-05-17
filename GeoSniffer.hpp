@@ -5,7 +5,7 @@
 #include <iostream>
 #include <utility>
 #include <thread>
-#include <string.h>
+#include <cstring>
 
 // Libs for ParseWifi
 #include <cstdio>
@@ -19,17 +19,17 @@
 #include <nlohmann/json.hpp>
 
 // Libs for Telegram Bot
-#include <stdio.h>
+#include <cstdio>
 #include <tgbot/tgbot.h>
 
-// Libs for GPIO PIN managment 
+// Libs for GPIO PIN management
 #include <gpiod.hpp>
 #include <chrono>
 
 namespace GeoSnifferLib {
     
     namespace Wifi {
-		// Used varaiables
+		// Used variables
 		extern std::map<std::string, int> networks;
 		extern std::string currentMac;
 		
@@ -40,12 +40,12 @@ namespace GeoSnifferLib {
         void parseWifi(const std::string& input);
         
         // Return scanned networks
-        std::map<std::string, int> getNetworks(void);
+        std::map<std::string, int> getNetworks();
     }
 
     namespace PostGC {
 		// Get Google API key from file
-		std::string getGoogleAPI(void);
+		std::string getGoogleAPI();
 		
 		// Get the output from HTTP curl response
 		size_t writeCallback(char* ptr, size_t size, size_t nmemb, std::string* data);
@@ -54,15 +54,18 @@ namespace GeoSnifferLib {
         std::string postGCG(const std::map<std::string, int>& networks);
         
         // Parse the JSON output from postGCG()
-        std::tuple<double, double, double> parseCoords(std::string StrJSON);
+        std::tuple<double, double, double> parseCoords(const std::string& StrJSON);
     }
     
     namespace TGBot {
 		// Get Bot token
-		std::string getBotToken(void);
+		std::string getBotToken();
+
+    	// Get the message with location + Google Maps Link
+    	std::string locateMsg();
 		
 		// Start and run the Telegram Bot
-		bool RunBot(void);
+		bool RunBot();
 	}
     
     namespace Gpiod {
