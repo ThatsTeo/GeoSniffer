@@ -73,3 +73,6 @@ config.txt
 
 # casual
 ProgettoRaspyC++.txt
+
+# macOS
+.DS_Store
