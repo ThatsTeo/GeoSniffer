@@ -38,13 +38,14 @@
 
 ### Standard used: C++17
 
-| Use            | Library                       |
-|----------------|-------------------------------|
-| Multithreading | thread                        |
-| Curl POST      | libcurl                       |
-| JSON           | nlohmann/json                 |
-| Telegram Bot   | tgbot                         |
-| Geolocation    | Google Cloud Geolocation API  |
+| Use               | Library                      |
+|-------------------|------------------------------|
+| Multithreading    | thread                       |
+| Activating buzzer | libgpiod                     |
+| Curl POST         | libcurl                      |
+| JSON              | nlohmann/json                |
+| Telegram Bot      | tgbot                        |
+| Geolocation       | Google Cloud Geolocation API |
 
 ## Project Structure 🗂️
 
@@ -53,6 +54,7 @@ GeoSniff/                   # Root folder
 ├── src/
 │   ├── ParseWifi.cpp           # Parse output & obtain MACs
 │   ├── PostGC.cpp              # Curl POST & geolocalization
+│   ├── GPIOdBuzzer.cpp         # Buzzer alarm with GPIO PINs
 │   └── TGBot.cpp               # All Telegram Bot functions
 ├── config.txt     <-----   # Where you will place your API 
 ├── CMakeLists.txt          # Build program
