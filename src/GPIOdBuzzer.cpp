@@ -1,6 +1,6 @@
 #include "GeoSniffer.hpp"
 
-namespace GeoSnifferLib {
+namespace GeoSnifferLib::Gpiod {
     unsigned int numPinBuzzer = 17;
 
     void beepBuzzer() {
@@ -16,15 +16,13 @@ namespace GeoSnifferLib {
             unsigned int i = 0;
             while (i < 5) {
                 request.set_value(numPinBuzzer, gpiod::line::value::ACTIVE);
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
                 request.set_value(numPinBuzzer, gpiod::line::value::INACTIVE);
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
                 ++i;
             }
         } catch (const std::exception& e) {
             std::cerr << "[ERROR] Error during beepBuzzer, exception: " << e.what() << std::endl;
         }
-
-        return;
     }
 }
