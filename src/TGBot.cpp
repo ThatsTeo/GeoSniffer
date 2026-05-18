@@ -45,6 +45,11 @@ namespace GeoSnifferLib::TGBot {
 		bot.getEvents().onCommand("locate", [&bot](const TgBot::Message::Ptr& message) {
 			bot.getApi().sendMessage(message->chat->id, locateMsg());
 		});
+		bot.getEvents().onCommand("beep", [&bot](const TgBot::Message::Ptr& message) {
+			std::string beepMsg = "Beeping the buzzer 5 times...";
+			Gpiod::beepBuzzer();
+			bot.getApi().sendMessage(message->chat->id, beepMsg);
+		});
     
 		try {
 			printf("Bot username: %s\n", bot.getApi().getMe()->username.c_str());

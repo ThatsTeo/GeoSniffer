@@ -23,5 +23,6 @@ int main() {
 	std::cout << std::endl << "Latitude: " << lat << std::endl << "Longitude: " << lng << std::endl << "Accuracy: " << accuracy << std::endl;
 	
 	GSL::TGBot::RunBot();
+
 	return 0;
 }
