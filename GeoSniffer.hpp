@@ -69,7 +69,10 @@ namespace GeoSnifferLib {
 	}
     
     namespace Gpiod {
-		// Number of the GPIO PIN for the passive buzzer
-		extern int numPinBuzzer;
+		// Number of the GPIO PIN for the active buzzer
+		extern unsigned int numPinBuzzer;
+
+    	// Beep the active buzzer 5 times
+    	void beepBuzzer();
 	}
 }
