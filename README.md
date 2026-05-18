@@ -14,6 +14,14 @@
 - After collecting the address, a function performs a curl POST using Google Cloud Geolocation API to triangulate the position of the Raspberry (works best with at least 2 nearby routers!).
 - The output is then displayed through a Telegram Bot created to send the location directly to the users phone, with also a manual request via a `/locate` command.
 
+### Demo on Telegram
+| Command                     | Result           |
+|-----------------------------|------------------|
+| `/locate` (good accuracy)   | Location found   |
+| `/locate` (accuracy > 100m) | Too imprecise    |
+| `/beep`                     | Buzzer activated |
+
+<img src="assets/exampleImg.png" width="300"/>
 ---
 
 ## How it works ⚙️
