@@ -1,5 +1,7 @@
 #include "GeoSniffer.hpp"
 
+// BEEPING THE BUZZER 5 TIMES
+
 namespace GeoSnifferLib::Gpiod {
     unsigned int numPinBuzzer = 17;
 

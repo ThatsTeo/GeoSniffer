@@ -2,7 +2,6 @@
 
 namespace GSL = GeoSnifferLib;
 
-
 int main() {
 	std::cout << "[DEBUG] Starting test" << std::endl;
 	
@@ -21,8 +20,9 @@ int main() {
 
 	auto [lat, lng, accuracy] = GSL::PostGC::parseCoords(positionStr);
 	std::cout << std::endl << "Latitude: " << lat << std::endl << "Longitude: " << lng << std::endl << "Accuracy: " << accuracy << std::endl;
-	
-	GSL::TGBot::RunBot();
 
+	std::thread threadBotd(GSL::TGBot::RunBot);
+	threadBotd.join();
+	std::cout << "Press Ctrl + C to terminate the program..." << std::endl;
 	return 0;
 }

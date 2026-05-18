@@ -13,7 +13,7 @@ namespace GeoSnifferLib::Wifi {
     
 		std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
     
-		if (!pipe) return "Errore apertura pipe";
+		if (!pipe) return "[PIPE ERROR] Error opening pipe";
 
 		while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
 			result += buffer.data();

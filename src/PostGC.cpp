@@ -1,6 +1,6 @@
 #include "GeoSniffer.hpp"
 
-// CALLBACK TO GOOGLE CLOUD GEOLOCATION API FOR APROXIMATE COORDINARTES
+// CALLBACK TO GOOGLE CLOUD GEOLOCATION API FOR APPROXIMATE COORDINARTES
 
 using json = nlohmann::json;
 
@@ -14,7 +14,7 @@ namespace GeoSnifferLib::PostGC {
 				return line.substr(line.find('=') + 1);
 			}
 		}
-		std::cerr << "[DEBUG] Google Cloud API not found.. Returning empty string" << std::endl;
+		std::cerr << "[API ERROR] Google Cloud API not found.. Returning empty string" << std::endl;
 		return "";
 	}
 	

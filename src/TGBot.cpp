@@ -14,7 +14,7 @@ namespace GeoSnifferLib::TGBot {
 				return line.substr(line.find('=') + 1);
 			}
 		}
-		std::cerr << "[DEBUG] Telegram Bot token not found.. Returning empty string" << std::endl;
+		std::cerr << "[TOKEN ERROR] Telegram Bot token not found.. Returning empty string" << std::endl;
 		return "";
 	}
 
@@ -23,7 +23,7 @@ namespace GeoSnifferLib::TGBot {
 		const std::string outputWifi = Wifi::exec(command);
 
 		if (outputWifi.empty()) {
-			std::cerr << "Nessun output" << std::endl;
+			std::cerr << "[ERROR] No output from iwlist..." << std::endl;
 		}
 
 		Wifi::parseWifi(outputWifi);
@@ -33,9 +33,13 @@ namespace GeoSnifferLib::TGBot {
 
 		auto [lat, lng, accuracy] = GSL::PostGC::parseCoords(positionStr);
 
-		return "Posizione: " + std::to_string(lat) + ", " + std::to_string(lng)
-			 + "\nPrecisione: " + std::to_string(static_cast<int>(accuracy)) + " metri"
+		if (accuracy <= 100) {
+			return "Position: " + std::to_string(lat) + ", " + std::to_string(lng)
+			 + "\nAccuracy: " + std::to_string(static_cast<int>(accuracy)) + " meters"
 			 + "\nhttps://www.google.com/maps/place/" + std::to_string(lat) + "," + std::to_string(lng);
+		 } else {
+			 return "Accuracy is more than 100 meters, it's not ideal to update the location now...";
+		 }
 	}
 
 	bool RunBot() {
@@ -44,6 +48,7 @@ namespace GeoSnifferLib::TGBot {
 
 		// /locate command
 		bot.getEvents().onCommand("locate", [&bot](const TgBot::Message::Ptr& message) {
+			bot.getApi().sendMessage(message->chat->id, "Processing information (this operation usually takes a few seconds)...");
 			bot.getApi().sendMessage(message->chat->id, locateMsg());
 		});
 
