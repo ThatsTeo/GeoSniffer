@@ -21,7 +21,7 @@
 | `/locate` (accuracy > 100m) | Too imprecise    |
 | `/beep`                     | Buzzer activated |
 
-<img src="assets/exampleImg.png" width="300"/>
+<img src="assets/demo.png" width="300"/>
 ---
 
 ## How it works ⚙️
