@@ -71,6 +71,12 @@ Testing/
 # API file
 config.txt
 
+<<<<<<< HEAD
+=======
+# CLion files
+.idea/
+
+>>>>>>> 781edcbfdfa8f9d60cd3aaa1f151f79637a646b3
 # macOS
 .DS_Store
 

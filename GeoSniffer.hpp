@@ -19,7 +19,6 @@
 #include <nlohmann/json.hpp>
 
 // Libs for Telegram Bot
-#include <cstdio>
 #include <tgbot/tgbot.h>
 
 // Libs for GPIO PIN management
