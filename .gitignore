@@ -71,8 +71,9 @@ Testing/
 # API file
 config.txt
 
-# casual
-ProgettoRaspyC++.txt
-
 # macOS
 .DS_Store
+
+# CLion / Zed
+.zed/
+.idea/
