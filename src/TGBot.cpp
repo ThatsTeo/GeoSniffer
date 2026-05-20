@@ -1,5 +1,4 @@
 #include "GeoSniffer.hpp"
-#include <atomic>
 
 namespace GSL = GeoSnifferLib;
 
@@ -48,7 +47,7 @@ namespace GeoSnifferLib::TGBot {
 		TgBot::Bot bot(botToken);
 
 		bot.getEvents().onAnyMessage([](TgBot::Message::Ptr message) {
-            std::cout << "[DEBUG] User message: " << message->text.c_str() << std::endl;
+            std::cout << "[USER MESSAGE] User message: " << message->text.c_str() << std::endl;
         });
 
 		// /locate command
@@ -69,21 +68,53 @@ namespace GeoSnifferLib::TGBot {
 			Gpiod::beepBuzzer();
 		});
 
+		// command to set interval between auto scan
+		int delayBetweenAuto = 0;
+		bot.getEvents().onCommand("setdelay", [&bot, &delayBetweenAuto](const TgBot::Message::Ptr& message) {
+            std::string userMsg = message->text;
+
+            // check for value
+            size_t spacePos = userMsg.find(' ');
+            if (spacePos == std::string::npos) {
+                bot.getApi().sendMessage(message->chat->id, "Usage: /setdelay <seconds>");
+                return;
+            }
+
+            std::string delayStr = userMsg.substr(spacePos + 1);
+
+            try {
+                int delayInt = std::stoi(delayStr);
+                if(delayInt <= 0) {
+                    bot.getApi().sendMessage(message->chat->id, "The value must be greater than 0!");
+                    return;
+                }
+                delayBetweenAuto = delayInt;
+
+                bot.getApi().sendMessage(message->chat->id, "Delay setted to: " + std::to_string(delayBetweenAuto) + " minutes.");
+            } catch (...) {
+                bot.getApi().sendMessage(message->chat->id, "Invalid number! Please enter a valid integer.");
+            }
+		});
+
 		// start auto locate
-		bot.getEvents().onCommand("startAutoLocate", [&bot](const TgBot::Message::Ptr& message) {
+		bot.getEvents().onCommand("startautolocate", [&bot, &delayBetweenAuto](const TgBot::Message::Ptr& message) {
 			if(!stopThread) {
 			    bot.getApi().sendMessage(message->chat->id, "You already have auto location active!");
 				return;
 			}
+			if(delayBetweenAuto <= 0) {
+                bot.getApi().sendMessage(message->chat->id, "Set a valid delay!");
+                return;
+			}
 			bot.getApi().sendMessage(message->chat->id, "Starting automatic scanning thread...");
 
 			// Start auto scan
-			bot.getApi().sendMessage(message->chat->id, "Auto scan started. You will recive a new position every 2 minutes from now.\nDigit '/stopAutoLocate' to stop.");
+			bot.getApi().sendMessage(message->chat->id, "Auto scan started. You will recive a new position every " + std::to_string(delayBetweenAuto) + " minutes from now.\nDigit '/stopautolocate' to stop.");
 			stopThread.store(false);
-			std::thread autoLocationd([&bot, message]() {
+			std::thread autoLocationd([&bot, message, &delayBetweenAuto]() {
 			    while(!stopThread) {
 					bot.getApi().sendMessage(message->chat->id, locateMsg());
-					for(int i = 0; i < 120 && !stopThread; ++i) std::this_thread::sleep_for(std::chrono::seconds(1));
+					for(int i = 0; i < delayBetweenAuto*60 && !stopThread; ++i) std::this_thread::sleep_for(std::chrono::seconds(1));
 				}
 			});
 			autoLocationd.detach();
@@ -91,7 +122,7 @@ namespace GeoSnifferLib::TGBot {
 		});
 
 		// stop auto locate
-		bot.getEvents().onCommand("stopAutoLocate", [&bot](const TgBot::Message::Ptr& message) {
+		bot.getEvents().onCommand("stopautolocate", [&bot, &delayBetweenAuto](const TgBot::Message::Ptr& message) {
 			if(stopThread) {
 			    bot.getApi().sendMessage(message->chat->id, "You must have auto locating on to use this command.");
 				return;
@@ -100,6 +131,7 @@ namespace GeoSnifferLib::TGBot {
 
 			// Stop auto scan
 			stopThread.store(true);
+			delayBetweenAuto = 0;
 			bot.getApi().sendMessage(message->chat->id, "Automatic scanning stopped.");
 			std::cout << "[DEBUG] autoLocationd stopped" << std::endl;
 		});
@@ -108,7 +140,7 @@ namespace GeoSnifferLib::TGBot {
 		    std::cout << "Bot username: " << bot.getApi().getMe()->username.c_str() << std::endl;
 			TgBot::TgLongPoll longPoll(bot);
 			while (true) {
-			    std::cout << "[DEBUG] Message longPoll" << std::endl;
+			    // std::cout << "[DEBUG] Message longPoll" << std::endl;
 				longPoll.start();
 			}
 		} catch (TgBot::TgException& e) {
