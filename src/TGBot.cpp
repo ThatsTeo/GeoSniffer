@@ -2,13 +2,13 @@
 
 namespace GSL = GeoSnifferLib;
 
-// FUNCTION TO RUN BOT 
+// FUNCTION TO RUN BOT
 
 namespace GeoSnifferLib::TGBot {
 	std::string getBotToken() {
 		std::ifstream config("../config.txt");
 		std::string line;
-	
+
 		while(std::getline(config, line)) {
 			if(line.find("TELEGRAM_TOKEN=") != std::string::npos) {
 				return line.substr(line.find('=') + 1);
@@ -49,25 +49,46 @@ namespace GeoSnifferLib::TGBot {
 		// /locate command
 		bot.getEvents().onCommand("locate", [&bot](const TgBot::Message::Ptr& message) {
 			bot.getApi().sendMessage(message->chat->id, "Processing information (this operation usually takes a few seconds)...");
-			bot.getApi().sendMessage(message->chat->id, locateMsg());
+			std::string msgToSend = locateMsg();
+			std::cout << "[BOT MESSAGE] Message sent: " << msgToSend << std::endl;
+
+			bot.getApi().sendMessage(message->chat->id, msgToSend);
 		});
 
 		// /beep command
 		bot.getEvents().onCommand("beep", [&bot](const TgBot::Message::Ptr& message) {
 			std::string beepMsg = "Beeping the buzzer 5 times...";
+			std::cout << "[BOT MESSAGE] Message sent: " << beepMsg << std::endl;
+
 			bot.getApi().sendMessage(message->chat->id, beepMsg);
 			Gpiod::beepBuzzer();
 		});
-    
+
+		// start auto locate
+		bot.getEvents().onCommand("startAutoLocate", [&bot](const TgBot::Message::Ptr& message) {
+			std::string autoScanStart = "Starting automatic scanning thread...";
+			bot.getApi().sendMessage(message->chat->id, autoScanStart);
+
+			// Start auto scan
+		});
+
+		// stop auto locate
+		bot.getEvents().onCommand("stopAutoLocate", [&bot](const TgBot::Message::Ptr& message) {
+			std::string autoScanStart = "Stopping automatic scanning thread...";
+			bot.getApi().sendMessage(message->chat->id, autoScanStart);
+
+			// Stop auto scan
+		});
+
 		try {
-			printf("Bot username: %s\n", bot.getApi().getMe()->username.c_str());
+		    std::cout << "Bot username: " << bot.getApi().getMe()->username.c_str() << std::endl;
 			TgBot::TgLongPoll longPoll(bot);
 			while (true) {
-				printf("Message LongPoll;\n");
+			    std::cout << "[DEBUG] Message longPoll" << std::endl;
 				longPoll.start();
 			}
 		} catch (TgBot::TgException& e) {
-			printf("error: %s\n", e.what());
+			std::cout << "[ERROR]: " << e.what() << std::endl;
 		}
 		return true;
 	}

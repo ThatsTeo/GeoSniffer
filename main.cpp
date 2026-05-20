@@ -4,17 +4,17 @@ namespace GSL = GeoSnifferLib;
 
 int main() {
 	std::cout << "[DEBUG] Starting test" << std::endl;
-	
+
 	// iwlist command to get MAC address
 	const char* command = "sudo iwlist wlan0 scanning";
 	std::string output = GSL::Wifi::exec(command);
-    
+
     if (output.empty()) {
         std::cerr << "[DEBUG] iwlist command gave no output!" << std::endl;
     }
 	GSL::Wifi::parseWifi(output);
-	
-	// output callback api 
+
+	// output callback api
     std::string positionStr = GSL::PostGC::postGCG(GSL::Wifi::networks);
     //std::cout << "[DEBUG] Full JSON: " << positionStr << std::endl;
 
@@ -22,7 +22,12 @@ int main() {
 	std::cout << std::endl << "Latitude: " << lat << std::endl << "Longitude: " << lng << std::endl << "Accuracy: " << accuracy << std::endl;
 
 	std::thread threadBotd(GSL::TGBot::RunBot);
-	threadBotd.join();
+	threadBotd.detach();
 	std::cout << "Press Ctrl + C to terminate the program..." << std::endl;
+
+	while (true) {
+	    // Implement automatic scan
+		std::this_thread::sleep_for(std::chrono::seconds(10));
+	}
 	return 0;
 }
