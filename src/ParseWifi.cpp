@@ -3,10 +3,6 @@
 // COLLECT MAC ADDRESS FROM ALL NEAR AND DISCOVERABLE ACCESS POINT
 
 namespace GeoSnifferLib::Wifi {
-
-	std::map<std::string, int> networks;
-    std::string currentMac;
-
 	std::string exec(const char* cmd) {
 		std::array<char, 256> buffer{};
 		std::string result;

@@ -1,4 +1,5 @@
 #include "GeoSniffer.hpp"
+#include <atomic>
 
 namespace GSL = GeoSnifferLib;
 
@@ -46,6 +47,10 @@ namespace GeoSnifferLib::TGBot {
 		std::string botToken = getBotToken();
 		TgBot::Bot bot(botToken);
 
+		bot.getEvents().onAnyMessage([](TgBot::Message::Ptr message) {
+            std::cout << "[DEBUG] User message: " << message->text.c_str() << std::endl;
+        });
+
 		// /locate command
 		bot.getEvents().onCommand("locate", [&bot](const TgBot::Message::Ptr& message) {
 			bot.getApi().sendMessage(message->chat->id, "Processing information (this operation usually takes a few seconds)...");
@@ -66,18 +71,28 @@ namespace GeoSnifferLib::TGBot {
 
 		// start auto locate
 		bot.getEvents().onCommand("startAutoLocate", [&bot](const TgBot::Message::Ptr& message) {
-			std::string autoScanStart = "Starting automatic scanning thread...";
-			bot.getApi().sendMessage(message->chat->id, autoScanStart);
+			bot.getApi().sendMessage(message->chat->id, "Starting automatic scanning thread...");
 
 			// Start auto scan
+			bot.getApi().sendMessage(message->chat->id, "Auto scan started. You will recive a new position every 2 minutes from now.\nDigit '/stopAutoLocate' to stop.");
+			std::thread autoLocationd([&bot, message]() {
+			    while(!stopThread) {
+					bot.getApi().sendMessage(message->chat->id, locateMsg());
+					std::this_thread::sleep_for(std::chrono::minutes(2));
+				}
+			});
+			autoLocationd.detach();
+			std::cout << "[DEBUG] autoLocationd thread detached!" << std::endl;
 		});
 
 		// stop auto locate
 		bot.getEvents().onCommand("stopAutoLocate", [&bot](const TgBot::Message::Ptr& message) {
-			std::string autoScanStart = "Stopping automatic scanning thread...";
-			bot.getApi().sendMessage(message->chat->id, autoScanStart);
+			bot.getApi().sendMessage(message->chat->id, "Stopping automatic scanning thread...");
 
 			// Stop auto scan
+			stopThread.store(true);
+			bot.getApi().sendMessage(message->chat->id, "Automatic scanning stopped.");
+			std::cout << "[DEBUG] autoLocationd stopped" << std::endl;
 		});
 
 		try {

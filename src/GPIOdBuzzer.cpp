@@ -3,8 +3,6 @@
 // BEEPING THE BUZZER 5 TIMES
 
 namespace GeoSnifferLib::Gpiod {
-    unsigned int numPinBuzzer = 17;
-
     void beepBuzzer() {
         try {
             gpiod::chip chip("/dev/gpiochip4");

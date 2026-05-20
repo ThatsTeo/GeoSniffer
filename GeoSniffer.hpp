@@ -6,6 +6,7 @@
 #include <utility>
 #include <thread>
 #include <cstring>
+#include <atomic>
 
 // Libs for ParseWifi
 #include <cstdio>
@@ -29,8 +30,8 @@ namespace GeoSnifferLib {
 
     namespace Wifi {
 		// Used variables
-		extern std::map<std::string, int> networks;
-		extern std::string currentMac;
+		inline std::map<std::string, int> networks;
+		inline std::string currentMac;
 
 		// Execute iwlist (shell command) and save the output
         std::string exec(const char* cmd);
@@ -60,6 +61,12 @@ namespace GeoSnifferLib {
 		// Get Bot token
 		std::string getBotToken();
 
+		// Thread for autoLocation
+		inline std::thread autoLocationd;
+
+		// Used to stop the autoLocationd thread
+		inline std::atomic<bool> stopThread(false);
+
     	// Get the message with location + Google Maps Link
     	std::string locateMsg();
 
@@ -69,7 +76,7 @@ namespace GeoSnifferLib {
 
     namespace Gpiod {
 		// Number of the GPIO PIN for the active buzzer
-		extern unsigned int numPinBuzzer;
+		inline unsigned int numPinBuzzer = 17;
 
     	// Beep the active buzzer 5 times
     	void beepBuzzer();
