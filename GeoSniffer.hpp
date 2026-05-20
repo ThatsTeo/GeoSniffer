@@ -65,7 +65,7 @@ namespace GeoSnifferLib {
 		inline std::thread autoLocationd;
 
 		// Used to stop the autoLocationd thread
-		inline std::atomic<bool> stopThread(false);
+		inline std::atomic<bool> stopThread(true);
 
     	// Get the message with location + Google Maps Link
     	std::string locateMsg();

@@ -71,14 +71,19 @@ namespace GeoSnifferLib::TGBot {
 
 		// start auto locate
 		bot.getEvents().onCommand("startAutoLocate", [&bot](const TgBot::Message::Ptr& message) {
+			if(!stopThread) {
+			    bot.getApi().sendMessage(message->chat->id, "You already have auto location active!");
+				return;
+			}
 			bot.getApi().sendMessage(message->chat->id, "Starting automatic scanning thread...");
 
 			// Start auto scan
 			bot.getApi().sendMessage(message->chat->id, "Auto scan started. You will recive a new position every 2 minutes from now.\nDigit '/stopAutoLocate' to stop.");
+			stopThread.store(false);
 			std::thread autoLocationd([&bot, message]() {
 			    while(!stopThread) {
 					bot.getApi().sendMessage(message->chat->id, locateMsg());
-					std::this_thread::sleep_for(std::chrono::minutes(2));
+					for(int i = 0; i < 120 && !stopThread; ++i) std::this_thread::sleep_for(std::chrono::seconds(1));
 				}
 			});
 			autoLocationd.detach();
@@ -87,6 +92,10 @@ namespace GeoSnifferLib::TGBot {
 
 		// stop auto locate
 		bot.getEvents().onCommand("stopAutoLocate", [&bot](const TgBot::Message::Ptr& message) {
+			if(stopThread) {
+			    bot.getApi().sendMessage(message->chat->id, "You must have auto locating on to use this command.");
+				return;
+			}
 			bot.getApi().sendMessage(message->chat->id, "Stopping automatic scanning thread...");
 
 			// Stop auto scan
